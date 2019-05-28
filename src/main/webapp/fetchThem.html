@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login page</title>
+</head>
+<body>
+	<code>See Console</code>
+	<br/>
+	<br/>
+	<input type="button" value="Get Token" onclick='getToken()' />
+    <br/>
+    <br/>
+    <input type="button" value="Access Not Secured" onclick='accessNotSecured()' />
+    <br/>
+    <br/>
+    <input type="button" value="Access Secured" onclick='accessSecured()' />
+	<br/>
+	<br/><br/>
+	<input id='info' value="" size='70'/>
+	
+    <script>
+
+		let bearer = '';
+		let info = document.querySelector('#info');
+		
+        function getToken() {
+			
+            fetch('./res/sec/token')
+                .then(r => r.text())
+                .then(t => {
+                	console.log('Token: '+t.substring(0,10)+'...');
+                	bearer = t;
+                	info.value = 'Token: ' + t;
+                });
+        }
+        
+		function accessNotSecured() {
+			
+            fetch('./res/sec/public')
+                .then(r => r.text())
+                .then(t => {
+                	console.log('Public: '+t);
+                	info.value = 'Public: ' + t;
+                });
+        }
+
+        function accessSecured() {
+        	console.log('Bearer: '+bearer.substring(0,10)+'...');
+            fetch('./res/sec/protected', {
+                method: 'GET',
+                headers: {
+                	'Authorization': 'Bearer '+bearer
+                }
+            })
+                .then(r => r.text())
+                .then(t => {
+                	console.log(t);
+                	info.value = 'Private: ' + t;
+                });
+        }
+        
+        
+    </script>
+</body>
+</html>
